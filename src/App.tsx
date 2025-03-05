@@ -1,21 +1,24 @@
 import { FC } from 'react';
 import { Outlet, Link } from 'react-router-dom';
-
+import { AppContainer, NavLinkWrapper } from './AppStyles';
 
 export const App: FC = () => {
   return (
-    <div>
+    <AppContainer>
       <header>
-        <nav>
-          <Link to="/">Усі рецепти</Link> | {' '}
+        <NavLinkWrapper>
+          <Link to="/">Усі рецепти</Link>
           <Link to="/selected">Вибрані рецепти</Link>
-        </nav>
+        </NavLinkWrapper>
       </header>
+
       <main>
         <Outlet />
       </main>
-    </div>
-  )
-}
+    </AppContainer>
+  );
+};
 
-export default App
+export default App;
+
+

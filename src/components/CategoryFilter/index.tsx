@@ -1,9 +1,9 @@
-import { FC } from 'react';
+import { FC } from 'react'
 
 interface CategoryFilterProps {
-  categories: string[];             // Список категорій
-  selectedCategory: string;         // Поточна вибрана категорія
-  onChangeCategory: (cat: string) => void; // Колбек при виборі категорії
+  categories: string[]
+  selectedCategory: string
+  onChangeCategory: (cat: string) => void
 }
 
 export const CategoryFilter: FC<CategoryFilterProps> = ({
@@ -17,15 +17,15 @@ export const CategoryFilter: FC<CategoryFilterProps> = ({
       <select
         id="category-select"
         value={selectedCategory}
-        onChange={(e) => onChangeCategory(e.target.value)}
+        onChange={e => onChangeCategory(e.target.value)}
       >
         <option value="All">All</option>
-        {categories.map((cat) => (
+        {categories.map(cat => (
           <option key={cat} value={cat}>
             {cat}
           </option>
         ))}
       </select>
     </div>
-  );
-};
+  )
+}
