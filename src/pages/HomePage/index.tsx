@@ -23,19 +23,19 @@ export const HomePage: FC = () => {
 
   const queryClient = useQueryClient();
 
-  // Завантаження всіх рецептів
+
   const { data, isLoading, isError, error } = useQuery<IMeal[]>({
     queryKey: ['meals', searchValue],
     queryFn: () => searchMealsByName(searchValue),
   });
 
-  // Завантаження списку категорій
+
   const { data: categoriesData } = useQuery<string[]>({
     queryKey: ['categories'],
     queryFn: () => getAllCategories(),
   });
 
-  // Підписка на список вибраних рецептів
+
   const { data: selectedMeals = [] } = useQuery<IMeal[]>({
     queryKey: ['selectedMeals'],
     queryFn: () => Promise.resolve([]),
@@ -51,7 +51,7 @@ export const HomePage: FC = () => {
   const totalPages = Math.ceil(filteredMeals.length / pageSize);
   const mealsPage = paginateArray(filteredMeals, currentPage, pageSize);
 
-  // Додає рецепт у кеш React Query
+
   const onAddToSelected = (meal: IMeal) => {
     const alreadySelected = selectedMeals.find(m => m.idMeal === meal.idMeal);
     if (!alreadySelected) {
