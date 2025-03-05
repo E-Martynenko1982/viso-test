@@ -1,11 +1,9 @@
-import { FC, useState } from 'react';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { searchMealsByName, getAllCategories } from '../../api/mealApi';
-import { SearchBar } from '../../components/SearchBar';
-import { RecipeCard } from '../../components/ReceipeCard';
-import { CategoryFilter } from '../../components/CategoryFilter';
-import { Pagination } from '../../components/Pagination';
+import { FC, useState, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { IMeal } from '../../types';
+import { searchMealsByName, getAllCategories } from '../../api/mealApi';
+import { RecipeCard } from '../../components/ReceipeCard';
+import { Pagination } from '../../components/Pagination';
 import { paginateArray } from '../../utils';
 import {
   HomePageContainer,
@@ -21,47 +19,37 @@ export const HomePage: FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 10;
 
-  const queryClient = useQueryClient();
+  const [selectedMeals, setSelectedMeals] = useState<IMeal[]>(() => {
+    const stored = localStorage.getItem('selectedMeals');
+    return stored ? JSON.parse(stored) : [];
+  });
 
+  useEffect(() => {
+    localStorage.setItem('selectedMeals', JSON.stringify(selectedMeals));
+  }, [selectedMeals]);
 
-  const { data, isLoading, isError, error } = useQuery<IMeal[]>({
+  const { data: mealsData = [] } = useQuery<IMeal[]>({
     queryKey: ['meals', searchValue],
     queryFn: () => searchMealsByName(searchValue),
   });
 
-
-  const { data: categoriesData } = useQuery<string[]>({
+  const { data: categoriesData = [] } = useQuery<string[]>({
     queryKey: ['categories'],
     queryFn: () => getAllCategories(),
   });
-
-
-  const { data: selectedMeals = [] } = useQuery<IMeal[]>({
-    queryKey: ['selectedMeals'],
-
-    queryFn: async () =>
-      queryClient.getQueryData<IMeal[]>(['selectedMeals']) || [],
-    enabled: false,
-    initialData: () =>
-      queryClient.getQueryData<IMeal[]>(['selectedMeals']) || [],
-  });
-
-  const meals = data ?? [];
   const filteredMeals =
     selectedCategory === 'All'
-      ? meals
-      : meals.filter(m => m.strCategory === selectedCategory);
-
+      ? mealsData
+      : mealsData.filter(m => m.strCategory === selectedCategory);
   const totalPages = Math.ceil(filteredMeals.length / pageSize);
   const mealsPage = paginateArray(filteredMeals, currentPage, pageSize);
-
-
   const onAddToSelected = (meal: IMeal) => {
-    const alreadySelected = selectedMeals.find(m => m.idMeal === meal.idMeal);
-    if (!alreadySelected) {
-      const updated = [...selectedMeals, meal];
-      queryClient.setQueryData(['selectedMeals'], updated);
-    }
+    setSelectedMeals(prev => {
+      if (!prev.find(m => m.idMeal === meal.idMeal)) {
+        return [...prev, meal];
+      }
+      return prev;
+    });
   };
 
   return (
@@ -69,35 +57,45 @@ export const HomePage: FC = () => {
       <Title>Усі рецепти</Title>
 
       <CenteredRow>
-        <SearchBar onSearch={(val) => setSearchValue(val)} />
-      </CenteredRow>
 
-      <CenteredRow>
-        <CategoryFilter
-          categories={categoriesData ?? []}
-          selectedCategory={selectedCategory}
-          onChangeCategory={(cat) => {
-            setSelectedCategory(cat);
-            setCurrentPage(1);
-          }}
+        <input
+          type="text"
+          placeholder="Пошук..."
+          onChange={(e) => setSearchValue(e.target.value)}
         />
       </CenteredRow>
 
-      {isLoading && <p>Завантаження...</p>}
-      {isError && <p>Сталася помилка: {(error as Error).message}</p>}
+      <CenteredRow>
+
+        <select
+          value={selectedCategory}
+          onChange={(e) => {
+            setSelectedCategory(e.target.value);
+            setCurrentPage(1);
+          }}
+        >
+          <option value="All">All</option>
+          {categoriesData.map(cat => (
+            <option key={cat} value={cat}>{cat}</option>
+          ))}
+        </select>
+      </CenteredRow>
 
       <SelectedCount>Обраних рецептів: {selectedMeals.length}</SelectedCount>
 
       <CardsWrapper>
-        {!isLoading &&
-          !isError &&
-          mealsPage.map(meal => (
+        {mealsPage.map(meal => {
+          const isSelected = !!selectedMeals.find(m => m.idMeal === meal.idMeal);
+
+          return (
             <RecipeCard
               key={meal.idMeal}
               meal={meal}
               onAddToSelected={onAddToSelected}
+              isSelected={isSelected}
             />
-          ))}
+          );
+        })}
       </CardsWrapper>
 
       <CenteredRow>
@@ -110,3 +108,5 @@ export const HomePage: FC = () => {
     </HomePageContainer>
   );
 };
+
+

@@ -1,24 +1,18 @@
-import { FC } from 'react';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { FC, useState, useEffect } from 'react';
 import { IMeal } from '../../types';
 import { SelectedRecipesList } from '../../components/SelectedRecipesList';
 
 export const SelectedPage: FC = () => {
-  const queryClient = useQueryClient();
-
-
-  const { data: selectedMeals = [] } = useQuery<IMeal[]>({
-    queryKey: ['selectedMeals'],
-    queryFn: async () =>
-      queryClient.getQueryData<IMeal[]>(['selectedMeals']) || [],
-    enabled: false,
-    initialData: () =>
-      queryClient.getQueryData<IMeal[]>(['selectedMeals']) || [],
+  const [selectedMeals, setSelectedMeals] = useState<IMeal[]>(() => {
+    const stored = localStorage.getItem('selectedMeals');
+    return stored ? JSON.parse(stored) : [];
   });
+  useEffect(() => {
+    localStorage.setItem('selectedMeals', JSON.stringify(selectedMeals));
+  }, [selectedMeals]);
 
   const handleRemoveMeal = (idMeal: string) => {
-    const updated = selectedMeals.filter(m => m.idMeal !== idMeal);
-    queryClient.setQueryData(['selectedMeals'], updated);
+    setSelectedMeals(prev => prev.filter(m => m.idMeal !== idMeal));
   };
 
   return (
@@ -28,5 +22,3 @@ export const SelectedPage: FC = () => {
     />
   );
 };
-
-

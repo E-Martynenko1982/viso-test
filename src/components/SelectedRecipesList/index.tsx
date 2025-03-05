@@ -37,7 +37,7 @@ export const SelectedRecipesList: FC<SelectedRecipesListProps> = ({
 
       {selectedMeals.map(meal => (
         <div key={meal.idMeal} style={{ marginBottom: '1rem' }}>
-          <RecipeCard meal={meal} />
+          <RecipeCard meal={meal} isSelected />
 
           {onRemoveMeal && (
             <RemoveButton
@@ -67,3 +67,5 @@ export const SelectedRecipesList: FC<SelectedRecipesListProps> = ({
     </SelectedListContainer>
   );
 };
+
+

@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC } from 'react';
 import { IMeal } from '../../types';
 import {
   CardContainer,
@@ -13,15 +13,13 @@ import {
 interface RecipeCardProps {
   meal: IMeal;
   onAddToSelected?: (meal: IMeal) => void;
+  isSelected?: boolean;
 }
 
-export const RecipeCard: FC<RecipeCardProps> = ({ meal, onAddToSelected }) => {
-  const [clicked, setClicked] = useState(false);
-
+export const RecipeCard: FC<RecipeCardProps> = ({ meal, onAddToSelected, isSelected }) => {
   const handleClick = () => {
-    if (onAddToSelected) {
+    if (!isSelected && onAddToSelected) {
       onAddToSelected(meal);
-      setClicked(true);
     }
   };
 
@@ -31,17 +29,25 @@ export const RecipeCard: FC<RecipeCardProps> = ({ meal, onAddToSelected }) => {
       <CardImage src={meal.strMealThumb} alt={meal.strMeal} />
       <CardParagraph>Категорія: {meal.strCategory}</CardParagraph>
       <CardParagraph>Походження: {meal.strArea}</CardParagraph>
+
       <CardActions>
         <StyledRouterLink to={`/recipe/${meal.idMeal}`}>
           Детальніше
         </StyledRouterLink>
+
         {onAddToSelected && (
-          <StyledButton variant="contained" onClick={handleClick}>
-            {clicked ? 'Додано' : 'Додати до вибраних'}
+          <StyledButton
+            variant="contained"
+            onClick={handleClick}
+            disabled={isSelected}
+          >
+            {isSelected ? 'Додано' : 'Додати до вибраних'}
           </StyledButton>
         )}
       </CardActions>
     </CardContainer>
   );
 };
+
+
 

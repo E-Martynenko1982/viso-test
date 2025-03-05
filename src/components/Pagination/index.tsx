@@ -13,25 +13,42 @@ export const Pagination: FC<PaginationProps> = ({
   totalPages,
   onPageChange,
 }) => {
+
   if (totalPages <= 1) return null;
+
 
   const pages = createPagesArray(totalPages);
 
   return (
     <PaginationContainer>
-      <PaginationButton onClick={() => onPageChange(currentPage - 1)} disabled={currentPage === 1}>
+
+      <PaginationButton
+        onClick={() => onPageChange(currentPage - 1)}
+        disabled={currentPage === 1}
+      >
         ←
       </PaginationButton>
+
+
       {pages.map((p, idx) =>
         p === '...' ? (
           <span key={idx}>...</span>
         ) : (
-          <PaginationButton key={p} onClick={() => onPageChange(p as number)} disabled={currentPage === p}>
+          <PaginationButton
+            key={p}
+            onClick={() => onPageChange(p as number)}
+            disabled={currentPage === p}
+          >
             {p}
           </PaginationButton>
         )
       )}
-      <PaginationButton onClick={() => onPageChange(currentPage + 1)} disabled={currentPage === totalPages}>
+
+
+      <PaginationButton
+        onClick={() => onPageChange(currentPage + 1)}
+        disabled={currentPage === totalPages}
+      >
         →
       </PaginationButton>
     </PaginationContainer>
