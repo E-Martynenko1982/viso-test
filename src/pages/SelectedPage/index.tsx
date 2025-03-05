@@ -6,8 +6,11 @@ import { SelectedRecipesList } from '../../components/SelectedRecipesList';
 export const SelectedPage: FC = () => {
   const queryClient = useQueryClient();
 
+
   const { data: selectedMeals = [] } = useQuery<IMeal[]>({
     queryKey: ['selectedMeals'],
+    queryFn: async () =>
+      queryClient.getQueryData<IMeal[]>(['selectedMeals']) || [],
     enabled: false,
     initialData: () =>
       queryClient.getQueryData<IMeal[]>(['selectedMeals']) || [],
@@ -25,4 +28,5 @@ export const SelectedPage: FC = () => {
     />
   );
 };
+
 
