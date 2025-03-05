@@ -1,10 +1,11 @@
-import { FC } from 'react'
-import { createPagesArray } from '../../utils'
+import { FC } from 'react';
+import { createPagesArray } from '../../utils';
+import { PaginationContainer, PaginationButton } from './PaginationStyles';
 
 interface PaginationProps {
-  currentPage: number
-  totalPages: number
-  onPageChange: (page: number) => void
+  currentPage: number;
+  totalPages: number;
+  onPageChange: (page: number) => void;
 }
 
 export const Pagination: FC<PaginationProps> = ({
@@ -12,31 +13,27 @@ export const Pagination: FC<PaginationProps> = ({
   totalPages,
   onPageChange,
 }) => {
-  if (totalPages <= 1) return null
+  if (totalPages <= 1) return null;
 
-  const pages = createPagesArray(totalPages)
+  const pages = createPagesArray(totalPages);
 
   return (
-    <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
-      <button onClick={() => onPageChange(currentPage - 1)} disabled={currentPage === 1}>
+    <PaginationContainer>
+      <PaginationButton onClick={() => onPageChange(currentPage - 1)} disabled={currentPage === 1}>
         ←
-      </button>
+      </PaginationButton>
       {pages.map((p, idx) =>
         p === '...' ? (
           <span key={idx}>...</span>
         ) : (
-          <button
-            key={p}
-            onClick={() => onPageChange(p as number)}
-            disabled={currentPage === p}
-          >
+          <PaginationButton key={p} onClick={() => onPageChange(p as number)} disabled={currentPage === p}>
             {p}
-          </button>
+          </PaginationButton>
         )
       )}
-      <button onClick={() => onPageChange(currentPage + 1)} disabled={currentPage === totalPages}>
+      <PaginationButton onClick={() => onPageChange(currentPage + 1)} disabled={currentPage === totalPages}>
         →
-      </button>
-    </div>
-  )
-}
+      </PaginationButton>
+    </PaginationContainer>
+  );
+};

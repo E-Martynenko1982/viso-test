@@ -1,30 +1,27 @@
-import { FC, useMemo } from 'react'
-import { useQueryClient } from '@tanstack/react-query'
-import { IMeal } from '../../types'
-import { RecipeCard } from '../../components/ReceipeCard'
-import { combineIngredients } from '../../utils'
+import { FC } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { IMeal } from '../../types';
+import { SelectedRecipesList } from '../../components/SelectedRecipesList';
 
 export const SelectedPage: FC = () => {
-  const queryClient = useQueryClient()
-  const selectedMeals = queryClient.getQueryData<IMeal[]>(['selectedMeals']) || []
+  const queryClient = useQueryClient();
 
-  const combinedMap = useMemo(() => combineIngredients(selectedMeals), [selectedMeals])
-  const ingredientsArray = Object.entries(combinedMap)
+  const { data: selectedMeals = [] } = useQuery<IMeal[]>({
+    queryKey: ['selectedMeals'],
+    queryFn: () => Promise.resolve([]),
+    initialData: () =>
+      queryClient.getQueryData<IMeal[]>(['selectedMeals']) || [],
+  });
+
+  const handleRemoveMeal = (idMeal: string) => {
+    const updated = selectedMeals.filter(m => m.idMeal !== idMeal);
+    queryClient.setQueryData(['selectedMeals'], updated);
+  };
 
   return (
-    <div>
-      <h1>Вибрані рецепти</h1>
-      {selectedMeals.map(meal => (
-        <RecipeCard key={meal.idMeal} meal={meal} />
-      ))}
-      <h2>Список усіх інгредієнтів:</h2>
-      <ul>
-        {ingredientsArray.map(([ingredient, measures]) => (
-          <li key={ingredient}>
-            {ingredient}: {measures.join(', ')}
-          </li>
-        ))}
-      </ul>
-    </div>
-  )
-}
+    <SelectedRecipesList
+      selectedMeals={selectedMeals}
+      onRemoveMeal={handleRemoveMeal}
+    />
+  );
+};

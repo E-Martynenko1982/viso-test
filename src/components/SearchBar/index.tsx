@@ -1,5 +1,6 @@
 import { FC, useEffect, useState } from 'react'
 import { useDebounce } from '../../hooks/useDebounce'
+import { StyledInput } from './SearchBarStyles'
 
 interface SearchBarProps {
   onSearch: (value: string) => void
@@ -14,13 +15,13 @@ export const SearchBar: FC<SearchBarProps> = ({ onSearch }) => {
   }, [debouncedSearchTerm, onSearch])
 
   return (
-    <div>
-      <input
-        type="text"
-        placeholder="Пошук рецептів..."
-        value={searchTerm}
-        onChange={e => setSearchTerm(e.target.value)}
-      />
-    </div>
+    <StyledInput
+      variant="outlined"
+      placeholder="Пошук рецептів..."
+      value={searchTerm}
+      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)}
+      size="small"
+    />
   )
 }
+

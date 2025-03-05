@@ -3,21 +3,23 @@ import Box from '@mui/material/Box';
 
 export const AppContainer = styled(Box)(() => ({
   minHeight: '100vh',
-  backgroundImage: `url("/assets/images/background.png")`,
+
   backgroundSize: 'cover',
   backgroundRepeat: 'no-repeat',
   backgroundPosition: 'center',
-  color: '#fff',
+  color: 'black',
 }));
 
 export const NavLinkWrapper = styled('div')({
   display: 'flex',
   gap: '1rem',
   a: {
-    color: '#fff',
+    marginLeft: '2rem',
+    fontSize: '1.2rem',
+    color: 'wheat',
     textDecoration: 'none',
     '&:hover': {
-      textDecoration: 'underline',
+      color: 'gold',
     },
   },
 });

@@ -1,9 +1,10 @@
-import { FC } from 'react'
+import { FC } from 'react';
+import { StyledLabel, StyledSelect } from './CategoryFilterStyles';
 
 interface CategoryFilterProps {
-  categories: string[]
-  selectedCategory: string
-  onChangeCategory: (cat: string) => void
+  categories: string[];
+  selectedCategory: string;
+  onChangeCategory: (cat: string) => void;
 }
 
 export const CategoryFilter: FC<CategoryFilterProps> = ({
@@ -13,11 +14,11 @@ export const CategoryFilter: FC<CategoryFilterProps> = ({
 }) => {
   return (
     <div>
-      <label htmlFor="category-select">Категорія:</label>
-      <select
+      <StyledLabel htmlFor="category-select">Категорія:</StyledLabel>
+      <StyledSelect
         id="category-select"
         value={selectedCategory}
-        onChange={e => onChangeCategory(e.target.value)}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => onChangeCategory(e.target.value)}
       >
         <option value="All">All</option>
         {categories.map(cat => (
@@ -25,7 +26,7 @@ export const CategoryFilter: FC<CategoryFilterProps> = ({
             {cat}
           </option>
         ))}
-      </select>
+      </StyledSelect>
     </div>
-  )
-}
+  );
+};
