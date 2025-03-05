@@ -23,22 +23,19 @@ export const HomePage: FC = () => {
 
   const queryClient = useQueryClient();
 
-
   const { data, isLoading, isError, error } = useQuery<IMeal[]>({
     queryKey: ['meals', searchValue],
     queryFn: () => searchMealsByName(searchValue),
   });
-
 
   const { data: categoriesData } = useQuery<string[]>({
     queryKey: ['categories'],
     queryFn: () => getAllCategories(),
   });
 
-
   const { data: selectedMeals = [] } = useQuery<IMeal[]>({
     queryKey: ['selectedMeals'],
-    queryFn: () => Promise.resolve([]),
+    enabled: false,
     initialData: () =>
       queryClient.getQueryData<IMeal[]>(['selectedMeals']) || [],
   });
@@ -50,7 +47,6 @@ export const HomePage: FC = () => {
 
   const totalPages = Math.ceil(filteredMeals.length / pageSize);
   const mealsPage = paginateArray(filteredMeals, currentPage, pageSize);
-
 
   const onAddToSelected = (meal: IMeal) => {
     const alreadySelected = selectedMeals.find(m => m.idMeal === meal.idMeal);

@@ -8,7 +8,7 @@ export const SelectedPage: FC = () => {
 
   const { data: selectedMeals = [] } = useQuery<IMeal[]>({
     queryKey: ['selectedMeals'],
-    queryFn: () => Promise.resolve([]),
+    enabled: false,
     initialData: () =>
       queryClient.getQueryData<IMeal[]>(['selectedMeals']) || [],
   });
@@ -25,3 +25,4 @@ export const SelectedPage: FC = () => {
     />
   );
 };
+
