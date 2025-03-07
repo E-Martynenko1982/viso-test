@@ -8,7 +8,7 @@ interface SearchBarProps {
 
 export const SearchBar: FC<SearchBarProps> = ({ onSearch }) => {
   const [searchTerm, setSearchTerm] = useState('')
-  const debouncedSearchTerm = useDebounce(searchTerm, 500)
+  const debouncedSearchTerm = useDebounce(searchTerm, 2000)
 
   useEffect(() => {
     onSearch(debouncedSearchTerm)

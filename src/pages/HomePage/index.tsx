@@ -12,6 +12,8 @@ import {
   SelectedCount,
   CardsWrapper
 } from './HomePageStyles';
+import { SearchBar } from '../../components/SearchBar';
+import { CategoryFilter } from '../../components/CategoryFilter';
 
 export const HomePage: FC = () => {
   const [searchValue, setSearchValue] = useState('');
@@ -37,12 +39,14 @@ export const HomePage: FC = () => {
     queryKey: ['categories'],
     queryFn: () => getAllCategories(),
   });
+
   const filteredMeals =
     selectedCategory === 'All'
       ? mealsData
       : mealsData.filter(m => m.strCategory === selectedCategory);
   const totalPages = Math.ceil(filteredMeals.length / pageSize);
   const mealsPage = paginateArray(filteredMeals, currentPage, pageSize);
+
   const onAddToSelected = (meal: IMeal) => {
     setSelectedMeals(prev => {
       if (!prev.find(m => m.idMeal === meal.idMeal)) {
@@ -57,28 +61,18 @@ export const HomePage: FC = () => {
       <Title>Усі рецепти</Title>
 
       <CenteredRow>
-
-        <input
-          type="text"
-          placeholder="Пошук..."
-          onChange={(e) => setSearchValue(e.target.value)}
-        />
+        <SearchBar onSearch={setSearchValue} />
       </CenteredRow>
 
       <CenteredRow>
-
-        <select
-          value={selectedCategory}
-          onChange={(e) => {
-            setSelectedCategory(e.target.value);
+        <CategoryFilter
+          categories={categoriesData}
+          selectedCategory={selectedCategory}
+          onChangeCategory={(cat) => {
+            setSelectedCategory(cat);
             setCurrentPage(1);
           }}
-        >
-          <option value="All">All</option>
-          {categoriesData.map(cat => (
-            <option key={cat} value={cat}>{cat}</option>
-          ))}
-        </select>
+        />
       </CenteredRow>
 
       <SelectedCount>Обраних рецептів: {selectedMeals.length}</SelectedCount>
@@ -86,7 +80,6 @@ export const HomePage: FC = () => {
       <CardsWrapper>
         {mealsPage.map(meal => {
           const isSelected = !!selectedMeals.find(m => m.idMeal === meal.idMeal);
-
           return (
             <RecipeCard
               key={meal.idMeal}
@@ -108,5 +101,3 @@ export const HomePage: FC = () => {
     </HomePageContainer>
   );
 };
-
-
